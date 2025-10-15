@@ -14,9 +14,10 @@ namespace CrudSqlServerDapper.Controllers
         {
             Console.WriteLine("\nSistema de controle de clientes\n");
             Console.WriteLine("(1)Cadastrar cliente");
-            Console.WriteLine("(2)Atualizar cliente");
-            Console.WriteLine("(3)Excluir cliente");
-            Console.WriteLine("(4)Pesquisar clientes");
+            Console.WriteLine("(2)Listar todos os clientes");
+            Console.WriteLine("(3)Atualizar cliente");
+            Console.WriteLine("(4)Deletar clientes");
+            Console.WriteLine("(5)Pesquisar cliente por ID");
 
             Console.WriteLine("\nInforme a opção desejada");
             var option = Console.ReadLine();
@@ -26,6 +27,19 @@ namespace CrudSqlServerDapper.Controllers
                 case "1":
                     CreateClient();
                     break;
+                case "2":
+                    ReadClients();
+                    break;
+                case "3":
+                    UpdateClient();
+                    break;
+                case "4":
+                    DeleteClient();
+                    break;
+                case "5":
+                    SelectClient();
+                    break;
+
                 default:
                     Console.WriteLine("Opção inválida");
                     break;
@@ -72,6 +86,80 @@ namespace CrudSqlServerDapper.Controllers
             {
                
                 Console.WriteLine("Cliente cadastrado com sucesso.");
+            }
+        }
+        public void ReadClients()
+        {
+            var clientrepository = new Repositories.ClientRepository();
+            var clients = clientrepository.GetAll();
+            Console.WriteLine("\nLISTA DE CLIENTES:\n");
+            foreach (var client in clients)
+            {
+                Console.WriteLine($"Id: {client.Id}");
+                Console.WriteLine($"Nome: {client.Name}");
+                Console.WriteLine($"Email: {client.Email}");
+                Console.WriteLine($"Data de Nascimento: {client.BirthDate.ToShortDateString()}");
+                Console.WriteLine("-------------------------------");
+            }
+        }
+        public void UpdateClient()
+        {
+            Console.WriteLine("\nATUALIZAR CLIENTE:\n");
+            Console.Write("Informe o Id do cliente: ");
+            var id = int.Parse(Console.ReadLine());
+            var clientrepository = new Repositories.ClientRepository();
+            var client = clientrepository.Get(id);
+            if (client != null)
+            {
+                Console.Write("Informe o novo nome do cliente: ");
+                client.Name = Console.ReadLine();
+                Console.Write("Informe o novo email do cliente: ");
+                client.Email = Console.ReadLine();
+                Console.Write("Informe a nova data de nascimento do cliente (dd/mm/aaaa): ");
+                client.BirthDate = DateTime.Parse(Console.ReadLine());
+                clientrepository.Update(client);
+                Console.WriteLine("Cliente atualizado com sucesso.");
+            }
+            else
+            {
+                Console.WriteLine("Cliente não encontrado.");
+            }
+        }
+        public void DeleteClient()
+        {
+            Console.WriteLine("\nEXCLUIR CLIENTE:\n");
+            Console.Write("Informe o Id do cliente: ");
+            var id = int.Parse(Console.ReadLine());
+            var clientrepository = new Repositories.ClientRepository();
+            var client = clientrepository.Get(id);
+            if (client != null)
+            {
+                clientrepository.Delete(id);
+                Console.WriteLine("Cliente excluído com sucesso.");
+            }
+            else
+            {
+                Console.WriteLine("Cliente não encontrado.");
+            }
+        }
+        public void SelectClient()
+        {
+            Console.WriteLine("\nPESQUISAR CLIENTE:\n");
+            Console.Write("Informe o Id do cliente: ");
+            var id = int.Parse(Console.ReadLine());
+            var clientrepository = new Repositories.ClientRepository();
+            var client = clientrepository.Get(id);
+            if (client != null)
+            {
+                Console.WriteLine($"Id: {client.Id}");
+                Console.WriteLine($"Nome: {client.Name}");
+                Console.WriteLine($"Email: {client.Email}");
+                Console.WriteLine($"Data de Nascimento: {client.BirthDate.ToShortDateString()}");
+                Console.WriteLine("-------------------------------");
+            }
+            else
+            {
+                Console.WriteLine("Cliente não encontrado.");
             }
         }
 

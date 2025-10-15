@@ -23,5 +23,38 @@ namespace CrudSqlServerDapper.Repositories
                 connection.Execute(query, client);
             }
         }
+        public List<Client> GetAll()
+        {
+            var query = "SELECT * FROM Clients";
+            using (var connection = new SqlConnection(_configuration.Connectionstring))
+            {
+                return connection.Query<Client>(query).ToList();
+            }
+        }
+        
+        public void Update(Client client)
+        {
+            var query = "UPDATE Clients SET Name = @Name, Email = @Email, BirthDate = @BirthDate WHERE Id = @Id";
+            using (var connection = new SqlConnection(_configuration.Connectionstring))
+            {
+                connection.Execute(query, client);
+            }
+        }
+        public void Delete(int id)
+        {
+            var query = "DELETE FROM Clients WHERE Id = @Id";
+            using (var connection = new SqlConnection(_configuration.Connectionstring))
+            {
+                connection.Execute(query, new { Id = id });
+            }
+        }
+        public Client Get(int id)
+        {
+            var query = "SELECT * FROM Clients WHERE Id = @Id";
+            using (var connection = new SqlConnection(_configuration.Connectionstring))
+            {
+                return connection.QueryFirstOrDefault<Client>(query, new { Id = id });
+            }
+        }
     }
 }
