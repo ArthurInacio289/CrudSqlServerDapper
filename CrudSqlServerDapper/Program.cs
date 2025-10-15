@@ -1,6 +1,6 @@
 ﻿using CrudSqlServerDapper.Controllers;
 
 var clientcontroller = new ClientController();
-clientcontroller.CreateClient();
+clientcontroller.Execute();
 
 Console.ReadLine();

@@ -9,6 +9,42 @@ namespace CrudSqlServerDapper.Controllers
 {
     public class ClientController
     {
+
+        public void Execute()
+        {
+            Console.WriteLine("\nSistema de controle de clientes\n");
+            Console.WriteLine("(1)Cadastrar cliente");
+            Console.WriteLine("(2)Atualizar cliente");
+            Console.WriteLine("(3)Excluir cliente");
+            Console.WriteLine("(4)Pesquisar clientes");
+
+            Console.WriteLine("\nInforme a opção desejada");
+            var option = Console.ReadLine();
+
+            switch (option)
+            {
+                case "1":
+                    CreateClient();
+                    break;
+                default:
+                    Console.WriteLine("Opção inválida");
+                    break;
+
+            }
+            Console.WriteLine("Deseja continuar? (S/N)");
+            var resp = Console.ReadLine() ?? String.Empty;
+            if (resp.Equals("S",StringComparison.OrdinalIgnoreCase))
+            {
+                Console.Clear();
+                Execute();
+            }
+            else
+            {
+                Console.WriteLine("Obrigado por utilizar o sistema.");
+            }
+        }
+
+
         public void CreateClient()
         {
             Console.WriteLine("\nCADASTRO DE CLIENTES:\n");
@@ -22,23 +58,22 @@ namespace CrudSqlServerDapper.Controllers
             client.BirthDate = DateTime.Parse(Console.ReadLine());
             var clientrepository = new Repositories.ClientRepository();
             clientrepository.Insert(client);
-            Console.WriteLine("\nCliente cadastrado com sucesso!\n");
-            Console.WriteLine("Pressione ENTER para continuar...");
-            Console.ReadLine();
-            Console.Clear();
             var validator = new Validators.ClientValidator();
             var results = validator.Validate(client);
             if (!results.IsValid)
             {
-                var clientrepository = new Repositories.ClientRepository();
+                Console.WriteLine("\nOcorreram erros na validação do cadastro.");
+                foreach (var failure in results.Errors)
+                {
+                    Console.WriteLine($"Propriedade {failure.PropertyName} falhou na validação. Erro: {failure.ErrorMessage}");
+                }                
             }
             else
             {
-                Console.WriteLine("Cliente válido.");
-                Console.ReadLine();
-
+               
+                Console.WriteLine("Cliente cadastrado com sucesso.");
             }
-
+        }
 
     }
 }
